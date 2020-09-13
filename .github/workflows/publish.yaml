@@ -30,4 +30,4 @@ jobs:
         POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.POETRY_PYPI_PASSWORD }}
       run: |
         $HOME/.poetry/bin/poetry build
-        $HOME/.poetry/bin/poetry publish
+        $HOME/.poetry/bin/poetry publish -u ${{ secrets.POETRY_PYPI_USERNAME }} -p ${{ secrets.POETRY_PYPI_PASSWORD }}
