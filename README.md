@@ -5,8 +5,6 @@
 [![Version](https://img.shields.io/pypi/pyversions/pyairnow.svg)](https://pypi.python.org/pypi/pyairnow)
 [![License](https://img.shields.io/pypi/l/pyairnow.svg)](https://github.com/asymworks/pyairnow/blob/master/LICENSE)
 [![Code Coverage](https://codecov.io/gh/asymworks/pyairnow/branch/master/graph/badge.svg)](https://codecov.io/gh/asymworks/pyairnow)
-[![Maintainability](https://api.codeclimate.com/v1/badges/948e4e3c84e5c49826f1/maintainability)](https://codeclimate.com/github/asymworks/pyairnow/maintainability)
-[![Say Thanks](https://img.shields.io/badge/SayThanks-!-1EAEDB.svg)](https://saythanks.io/to/bachya)
 
 `pyairnow` is a simple, tested, thin client library for interacting with the
 [AirNow](https://www.airnow.gov) United States EPA Air Quality Index API.
