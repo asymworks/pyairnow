@@ -46,7 +46,7 @@ jobs:
 
       - run: |
           python -m venv venv
-          venv/bin/pip install -r requirements-dev.txt
+          venv/bin/pip install -f requirements-dev.txt
           venv/bin/python -m coverage run --source=pyairnow -m pytest tests
 
       - uses: codecov/codecov-action@v1
