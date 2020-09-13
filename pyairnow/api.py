@@ -63,11 +63,13 @@ class WebServiceAPI:
             # Process an Error Message from the API server
             wsErr = data['WebServiceError']
             if isinstance(wsErr, list) and len(wsErr) > 0:
-                if 'msg' in wsErr[0]:
-                    if wsErr[0]['msg'] == 'Invalid API key':
-                        raise InvalidKeyError(wsErr[0]['msg'])
+                if 'Message' in wsErr[0]:
+                    if wsErr[0]['Message'] == 'Invalid API key':
+                        raise InvalidKeyError(wsErr[0]['Message'])
+                    elif wsErr[0]['Message'] == 'Request not authenticated':
+                        raise InvalidKeyError(wsErr[0]['Message'])
                     else:
-                        raise AirNowError(wsErr[0]['msg'])
+                        raise AirNowError(wsErr[0]['Message'])
                 else:
                     raise AirNowError(str(wsErr[0]))
             else:

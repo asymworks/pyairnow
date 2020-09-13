@@ -5,6 +5,10 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+pytest = "*"
+aioresponses = "*"
+pytest-asyncio = "*"
+coverage = "*"
 
 [packages]
 aiohttp = "*"
