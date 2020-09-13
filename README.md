@@ -1,5 +1,13 @@
 # pyairnow: a thin Python wrapper for the AirNow API
 
+[![CI](https://github.com/asymworks/pyairnow/workflows/CI/badge.svg)](https://github.com/asymworks/pyairnow/actions)
+[![PyPi](https://img.shields.io/pypi/v/pyairvisual.svg)](https://pypi.python.org/pypi/pyairnow)
+[![Version](https://img.shields.io/pypi/pyversions/pyairvisual.svg)](https://pypi.python.org/pypi/pyairnow)
+[![License](https://img.shields.io/pypi/l/pyairvisual.svg)](https://github.com/asymworks/pyairnow/blob/master/LICENSE)
+[![Code Coverage](https://codecov.io/gh/asymworks/pyairnow/branch/master/graph/badge.svg)](https://codecov.io/gh/asymworks/pyairnow)
+[![Maintainability](https://api.codeclimate.com/v1/badges/948e4e3c84e5c49826f1/maintainability)](https://codeclimate.com/github/asymworks/pyairnow/maintainability)
+[![Say Thanks](https://img.shields.io/badge/SayThanks-!-1EAEDB.svg)](https://saythanks.io/to/bachya)
+
 `pyairnow` is a simple, tested, thin client library for interacting with the
 [AirNow](https://www.airnow.gov) United States EPA Air Quality Index API.
 
@@ -114,8 +122,8 @@ asyncio.run(main())
 1. [Check for open features/bugs](https://github.com/asymworks/pyairnow/issues)
   or [start a discussion on one](https://github.com/asymworks/pyairnow/issues/new).
 2. [Fork the repository](https://github.com/asymworks/pyairnow/fork).
-3. Install [PipEnv](https://pypi.org/project/pipenv/) and set up the development workspace:
-  `pipenv install --dev`
+3. Install [Poetry](https://python-poetry.org/) and set up the development workspace:
+  `poetry install`
 4. Code your new feature or bug fix.
 5. Write tests that cover your new functionality.
 6. Run tests and ensure 100% code coverage: `make test`
