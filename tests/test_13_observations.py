@@ -1,7 +1,5 @@
-import datetime
 import pytest
 
-from aiohttp import ClientSession
 from pyairnow import WebServiceAPI
 
 from .mock_api import MOCK_API_KEY

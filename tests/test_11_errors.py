@@ -1,9 +1,8 @@
 import pytest
 
-from aiohttp import ClientSession
 from pyairnow import WebServiceAPI
-from pyairnow.errors import AirNowError, EmptyResponseError, InvalidJsonError, \
-    InvalidKeyError
+from pyairnow.errors import AirNowError, EmptyResponseError, \
+    InvalidJsonError, InvalidKeyError
 
 from .mock_api import MOCK_API_KEY
 
@@ -27,21 +26,21 @@ async def test_api_invalid_key(mock_airnowapi):
 @pytest.mark.asyncio
 async def test_api_bad_json(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
-    with pytest.raises(InvalidJsonError) as exc_info:
+    with pytest.raises(InvalidJsonError):
         await client.forecast.zipCode('bad_json')
 
 
 @pytest.mark.asyncio
 async def test_api_bad_json_2(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
-    with pytest.raises(InvalidJsonError) as exc_info:
+    with pytest.raises(InvalidJsonError):
         await client.forecast.zipCode('dict')
 
 
 @pytest.mark.asyncio
 async def test_api_empty_response(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
-    with pytest.raises(EmptyResponseError) as exc_info:
+    with pytest.raises(EmptyResponseError):
         await client.forecast.zipCode('empty')
 
 

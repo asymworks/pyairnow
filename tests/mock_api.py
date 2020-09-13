@@ -1,11 +1,12 @@
 '''Mocked AirNow API'''
 import re
-import datetime
 
 from aioresponses import CallbackResult
 
 MOCK_API_KEY = '01234567-89AB-CDEF-0123-456789ABCDEF'
-RE_ENDPOINTS = re.compile('^\/?aq/(forecast|observation)/(zipCode|latLong)(\/(current))?\/?$')
+RE_ENDPOINTS = re.compile(
+    '^/?aq/(forecast|observation)/(zipCode|latLong)(/(current))?/?$'
+)
 
 
 def mock_airnow_api(url, **kwargs):

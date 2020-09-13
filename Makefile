@@ -1,26 +1,36 @@
 
+build :
+	poetry run python setup.py sdist bdist_wheel
+
+clean :
+	$(RM) -rf build dist *.egg-info
+
 coverage :
-	pipenv run coverage run --source=pyairnow -m pytest tests
+	poetry run coverage run --source=pyairnow -m pytest tests
 
 coverage-html :
-	pipenv run coverage html -d .htmlcov && open .htmlcov/index.html
+	poetry run coverage html -d .htmlcov && open .htmlcov/index.html
 
 coverage-report :
-	pipenv run coverage report -m
+	poetry run coverage report -m
+
+export :
+	poetry export -f requirements.txt -o requirements-dev.txt --dev
 
 lint :
-	pipenv run flake8
+	poetry run flake8
 
 test :
-	pipenv run python -m pytest tests
+	poetry run python -m pytest tests
 
 test-x :
-	pipenv run python -m pytest tests -x
+	poetry run python -m pytest tests -x
 
 test-wip :
-	pipenv run python -m pytest tests -m wip
+	poetry run python -m pytest tests -m wip
 
-#all: serve
+all: build
 
-.PHONY: coverage coverage-html coverage-report \
+.PHONY: build \
+	coverage coverage-html coverage-report \
 	lint test test-wip test-x
