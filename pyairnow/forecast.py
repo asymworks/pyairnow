@@ -49,7 +49,8 @@ class Forecast:
             longitude=str(longitude),
         )
         if date and isinstance(date, str):
-            params['date'] = date_.fromisoformat(date).isoformat()
+            y, m, d = date.split('-')
+            params['date'] = date_(int(y), int(m), int(d)).isoformat()
         elif date and isinstance(date, datetime):
             params['date'] = date.date().isoformat()
         elif date and isinstance(date, date_):
