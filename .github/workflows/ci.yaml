@@ -46,7 +46,7 @@ jobs:
 
       - run: |
           python -m venv venv
-          venv/bin/pip install -f requirements-dev.txt
+          venv/bin/pip install -r requirements-dev.txt
           venv/bin/python -m coverage run --source=pyairnow -m pytest tests
 
       - uses: codecov/codecov-action@v1
@@ -66,6 +66,6 @@ jobs:
 
       - run: |
           python -m venv venv
-          venv/bin/pip install -f requirements-dev.txt
+          venv/bin/pip install -r requirements-dev.txt
           venv/bin/flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           venv/bin/flake8 . --count --exit-zero --max-complexity=12 --max-line-length=127 --statistics
