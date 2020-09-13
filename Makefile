@@ -1,6 +1,6 @@
 
 build :
-	poetry run python setup.py sdist bdist_wheel
+	poetry build
 
 clean :
 	$(RM) -rf build dist *.egg-info
@@ -20,6 +20,9 @@ export :
 lint :
 	poetry run flake8
 
+publish :
+	poetry publish
+
 test :
 	poetry run python -m pytest tests
 
@@ -29,7 +32,7 @@ test-x :
 test-wip :
 	poetry run python -m pytest tests -m wip
 
-all: build
+all: test lint build publish
 
 .PHONY: build \
 	coverage coverage-html coverage-report \
