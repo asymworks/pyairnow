@@ -23,9 +23,9 @@ jobs:
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
     - name: Install Dependencies
       run: $HOME/.poetry/bin/poetry install
-    - name: Build and publish
+    - name: Build and Publish
       env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.POETRY_PYPI_TOKEN_PYPI }}
       run: |
         $HOME/.poetry/bin/poetry build
         $HOME/.poetry/bin/poetry publish
