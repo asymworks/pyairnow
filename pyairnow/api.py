@@ -7,12 +7,13 @@ from aiohttp import ClientSession, ClientTimeout
 from .errors import AirNowError, EmptyResponseError, InvalidJsonError, \
     InvalidKeyError
 from .forecast import Forecast
-from .observation import Observation
+from .observation import Observations
 
 API_BASE_URL: str = 'http://www.airnowapi.org'
 API_DEFAULT_TIMEOUT: int = 10
 
-class CloudAPI:
+
+class WebServiceAPI:
     '''Client to interact with AirNow API'''
     def __init__(
         self, api_key: str, *, session: Optional[ClientSession] = None
@@ -22,7 +23,7 @@ class CloudAPI:
         self._session: ClientSession = session
 
         self.forecast = Forecast(self._get)
-        self.observation = Observation(self._get)
+        self.observations = Observations(self._get)
 
     async def _get(
         self, endpoint: str, *, base_url: str = API_BASE_URL, **kwargs
@@ -61,7 +62,7 @@ class CloudAPI:
         if isinstance(data, dict) and 'WebServiceError' in data:
             # Process an Error Message from the API server
             wsErr = data['WebServiceError']
-            if isinsstance(wsErr, list) and len(wsErr) > 0:
+            if isinstance(wsErr, list) and len(wsErr) > 0:
                 if 'msg' in wsErr[0]:
                     if wsErr[0]['msg'] == 'Invalid API key':
                         raise InvalidKeyError(wsErr[0]['msg'])
@@ -74,7 +75,9 @@ class CloudAPI:
 
         elif not isinstance(data, list):
             # We should get a list of Observation or Forecast objects
-            raise InvalidJsonError('Unexpected response type: %s' % (type(data)))
+            raise InvalidJsonError(
+                'Unexpected response type: %s' % (type(data))
+            )
 
         elif len(data) == 0:
             # No objects were returned

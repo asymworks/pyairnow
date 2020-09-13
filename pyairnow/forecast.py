@@ -2,6 +2,7 @@
 from datetime import date as date_, datetime
 from typing import Callable, Coroutine, Optional, Union
 
+
 class Forecast:
     '''
     Class to retrieve the air quality forecast by zip code or by latitude and
@@ -18,7 +19,7 @@ class Forecast:
         distance: Optional[int] = None
     ) -> list:
         '''Request current observation for zip code'''
-        params: dict = dict(zipCode = zipCode)
+        params: dict = dict(zipCode=zipCode)
         if date and isinstance(date, str):
             params['date'] = date_.fromisoformat(date).isoformat()
         elif date and isinstance(date, datetime):
@@ -30,7 +31,7 @@ class Forecast:
 
         return await self._request(
             'aq/forecast/zipCode',
-            params = params
+            params=params
         )
 
     async def latLong(
@@ -43,8 +44,8 @@ class Forecast:
     ) -> None:
         '''Request current observation for latitude/longitude'''
         params: dict = dict(
-            latitude = str(latitude),
-            longitude = str(longitude),
+            latitude=str(latitude),
+            longitude=str(longitude),
         )
         if date and isinstance(date, str):
             params['date'] = date_.fromisoformat(date).isoformat()
@@ -57,5 +58,5 @@ class Forecast:
 
         return await self._request(
             'aq/forecast/latLong',
-            params = params
+            params=params
         )

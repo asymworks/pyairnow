@@ -1,2 +1,2 @@
 '''Public Objects'''
-from .api import CloudAPI   # noqa
+from .api import WebServiceAPI   # noqa

@@ -1,7 +1,8 @@
 '''Retrieve a list of Current Observations'''
 from typing import Callable, Coroutine, Optional, Union
 
-class Observation:
+
+class Observations:
     '''
     Class to retrieve the current air quality observations by zip code or by
     latitude and longitude.
@@ -16,13 +17,13 @@ class Observation:
         distance: Optional[int] = None
     ) -> list:
         '''Request current observation for zip code'''
-        params: dict = dict(zipCode = zipCode)
+        params: dict = dict(zipCode=zipCode)
         if distance:
             params['distance'] = distance
 
         return await self._request(
             'aq/observation/zipCode/current',
-            params = params
+            params=params
         )
 
     async def latLong(
@@ -34,13 +35,13 @@ class Observation:
     ) -> None:
         '''Request current observation for latitude/longitude'''
         params: dict = dict(
-            latitude = str(latitude),
-            longitude = str(longitude),
+            latitude=str(latitude),
+            longitude=str(longitude),
         )
         if distance:
             params['distance'] = distance
 
         return await self._request(
             'aq/observation/latLong/current',
-            params = params
+            params=params
         )
