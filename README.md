@@ -115,6 +115,32 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
+The library provides two convenience functions to convert between AQI and
+pollutant concentrations. See
+[this EPA document](https://www.airnow.gov/sites/default/files/2020-05/aqi-technical-assistance-document-sept2018.pdf)
+for more details.
+
+```python
+
+from pyairnow.conv import aqi_to_concentration, concentration_to_aqi
+
+# Supported Pollutants
+# --------------------
+# Ozone ('O3'): ppm
+# pm2.5 ('PM2.5'): ug/m^3
+# pm10 ('PM10'): ug/m^3
+# Carbon Monoxide ('CO'): ppm
+# Sulfur Dioxide ('SO2'): ppm
+# Nitrogen Dioxide ('NO2'): ppm
+
+# Returns AQI = 144 for pm2.5 of 53.0 ug/m^3
+aqi_to_concentration(144, 'PM2.5')
+
+# Returns Cp = 53.0 ug/m^3
+concentration_to_aqi(53.0, 'PM2.5')
+
+```
+
 # Contributing
 
 1. [Check for open features/bugs](https://github.com/asymworks/pyairnow/issues)
