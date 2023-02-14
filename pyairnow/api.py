@@ -9,7 +9,7 @@ from .errors import AirNowError, EmptyResponseError, InvalidJsonError, \
 from .forecast import Forecast
 from .observation import Observations
 
-API_BASE_URL: str = 'http://www.airnowapi.org'
+API_BASE_URL: str = 'https://www.airnowapi.org'
 API_DEFAULT_TIMEOUT: int = 10
 
 
