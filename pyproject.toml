@@ -24,10 +24,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 aiohttp = "^3.6.2"
-python = "^3.6"
+python = "^3.6,<3.11"
 
 [tool.poetry.dev-dependencies]
-aioresponses = "^0.6.4"
+aioresponses = "^0.7.0"
 coverage = "^5.2.1"
 flake8 = "^3.8.3"
 pytest = "^6.0.2"
