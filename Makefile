@@ -15,7 +15,7 @@ coverage-report :
 	poetry run coverage report -m
 
 export :
-	poetry export -f requirements.txt -o requirements-dev.txt --dev
+	poetry export -f requirements.txt -o requirements-dev.txt --with dev
 
 lint :
 	poetry run flake8
