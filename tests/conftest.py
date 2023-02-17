@@ -15,5 +15,5 @@ def mock_aioresponse():
 
 @pytest.fixture
 def mock_airnowapi(mock_aioresponse):
-    url_pattern = re.compile(r'^http://www\.airnowapi\.org/(.*)$')
+    url_pattern = re.compile(r'^https://www\.airnowapi\.org/(.*)$')
     mock_aioresponse.get(url_pattern, callback=mock_airnow_api)
