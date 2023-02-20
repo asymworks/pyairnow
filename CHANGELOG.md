@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 None
 
+## [1.2.1] - 2023-02-20
+
+### Changed
+- Update dependencies to support Python 3.11 to match Home Assistant CI
+
 ## [1.2.0] - 2023-02-20
 
 ### Changed
@@ -26,7 +31,8 @@ None
 ### Changed
 - Fixed GitHub Publish workflow
 
-[unreleased]: https://github.com/asymworks/pyairnow/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/asymworks/pyairnow/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/asymworks/pyairnow/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/asymworks/pyairnow/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/asymworks/pyairnow/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/asymworks/pyairnow/releases/tag/v1.0.1
