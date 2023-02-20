@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pyairnow"
-version = "1.2.0"
+version = "1.2.1"
 description = "A lightweight Python wrapper for EPA AirNow Air Quality API"
 readme = "README.md"
 authors = ["Jonathan Krauss <jkrauss@asymworks.com>"]
@@ -17,6 +17,7 @@ classifiers = [
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Topic :: Scientific/Engineering :: Atmospheric Science",
