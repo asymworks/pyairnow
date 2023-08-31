@@ -14,14 +14,14 @@ coverage-html :
 coverage-report :
 	poetry run coverage report -m
 
-export :
-	poetry export -f requirements.txt -o requirements-dev.txt --with dev
-
 lint :
 	poetry run flake8
 
 publish :
 	poetry publish
+
+requirements :
+	poetry export -f requirements.txt -o requirements-dev.txt --with dev
 
 test :
 	poetry run python -m pytest tests
