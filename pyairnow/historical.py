@@ -1,6 +1,7 @@
 '''Retrieve Historical Air Quality'''
-from datetime import date as date_, datetime
+from datetime import date as date_, datetime, timezone, timedelta
 from typing import Callable, Coroutine, Optional, Union
+from .errors import AirNowError
 
 
 class Historical:
@@ -11,23 +12,32 @@ class Historical:
     def __init__(self, request: Callable[..., Coroutine]) -> None:
         self._request = request
 
+    '''If date is given as string, must be in yyyy-mm-d format. '''
     async def zipCode(
         self,
         zipCode: str,
         *,
-        date: Optional[Union[date_, datetime, str]] = None,
+        date: Union[date_, datetime, str],
         distance: Optional[int] = None
     ) -> list:
         '''Request current observation for zip code'''
         params: dict = dict(zipCode=zipCode)
         '''Airnow  needs T00-0000 appended to the date parameter for historical calls'''
-        if date and isinstance(date, str):
+        if isinstance(date, str):
             y, m, d = date.split('-')
-            params['date'] = date_(int(y), int(m), int(d)).isoformat() + "T00-0000"
-        elif date and isinstance(date, datetime):
-            params['date'] = date.date().isoformat() + "T00-0000"
-        elif date and isinstance(date, date_):
-            params['date'] = date.isoformat() + "T00-0000"
+            '''create a timezone object with no utc offset'''
+            tz = timezone(timedelta())
+            params['date'] = datetime(int(y), int(m), int(d), tzinfo=tz).strftime("%Y-%m-%dT%H%z")
+        elif isinstance(date, datetime):
+            tz = timezone(timedelta())
+            date = date.replace(tzinfo=tz)
+            params['date'] = date.strftime("%Y-%m-%dT%H%z")
+        elif isinstance(date, date_):
+            tz=timezone(timedelta())
+            params['date'] = datetime(date.year, date.month, date.day, tzinfo=tz).strftime("%Y-%m-%dT%H%z")
+        else:
+            raise AirNowError("Bad date type. Date parameter is either date, datetime, or a string.")
+
         if distance:
             params['distance'] = distance
 
@@ -41,7 +51,7 @@ class Historical:
         latitude: Optional[Union[float, str]] = None,
         longitude: Optional[Union[float, str]] = None,
         *,
-        date: Optional[Union[date_, datetime, str]] = None,
+        date: Union[date_, datetime, str],
         distance: Optional[int] = None,
     ) -> None:
         '''Request current observation for latitude/longitude'''
@@ -49,13 +59,22 @@ class Historical:
             latitude=str(latitude),
             longitude=str(longitude),
         )
-        if date and isinstance(date, str):
+
+        if isinstance(date, str):
             y, m, d = date.split('-')
-            params['date'] = date_(int(y), int(m), int(d)).isoformat() + "T00-0000"
-        elif date and isinstance(date, datetime):
-            params['date'] = date.date().isoformat() + "T00-0000"
-        elif date and isinstance(date, date_):
-            params['date'] = date.isoformat() + "T00-0000"
+            '''create a timezone object with no utc offset'''
+            tz = timezone(timedelta())
+            params['date'] = datetime(int(y), int(m), int(d), tzinfo=tz).strftime("%Y-%m-%dT%H%z")
+        elif isinstance(date, datetime):
+            tz = timezone(timedelta())
+            date = date.replace(tzinfo=tz)
+            params['date'] = date.strftime("%Y-%m-%dT%H%z")
+        elif isinstance(date, date_):
+            tz=timezone(timedelta())
+            params['date'] = datetime(date.year, date.month, date.day, tzinfo=tz).strftime("%Y-%m-%dT%H%z")
+        else:
+            raise AirNowError("Bad date type. Date parameter is either date, datetime, or a string.")
+
         if distance:
             params['distance'] = distance
 
@@ -63,3 +82,4 @@ class Historical:
             'aq/observation/latLong/historical',
             params=params
         )
+
