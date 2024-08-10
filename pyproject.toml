@@ -37,3 +37,9 @@ flake8 = "^3.8.3"
 pytest = "^6.0.2"
 pytest-asyncio = "^0.14.0"
 pytest-cov = "^2.10.1"
+
+[tool.setuptools.package-data]
+"pyairnow" = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["pyairnow"]
