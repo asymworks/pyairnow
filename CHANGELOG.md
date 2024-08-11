@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 None
 
+## [1.2.2] - 2024-08-11
+- Add py.typed marker (PEP-561) (#9)
+- Remove setuptools, wheel from build-system (#7)
+
 ## [1.2.1] - 2023-02-20
 
 ### Changed
