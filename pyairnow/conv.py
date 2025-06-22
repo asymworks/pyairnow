@@ -6,7 +6,7 @@ EPA_TABLE = [
         'iH': 50,
         'breakpoints': {
             'O3':       { 'bL': 0.000,    'bH': 0.054   },
-            'PM2.5':    { 'bL': 0.0,      'bH': 12.0    },
+            'PM2.5':    { 'bL': 0.0,      'bH': 9.0     },
             'PM10':     { 'bL': 0,        'bH': 54      },
             'CO':       { 'bL': 0.0,      'bH': 4.4     },
             'SO2':      { 'bL': 0,        'bH': 35      },
@@ -18,7 +18,7 @@ EPA_TABLE = [
         'iH': 100,
         'breakpoints': {
             'O3':       { 'bL': 0.055,    'bH': 0.070   },
-            'PM2.5':    { 'bL': 12.1,     'bH': 35.4    },
+            'PM2.5':    { 'bL': 9.1,      'bH': 35.4    },
             'PM10':     { 'bL': 55,       'bH': 154     },
             'CO':       { 'bL': 4.5,      'bH': 9.4     },
             'SO2':      { 'bL': 36,       'bH': 75      },
@@ -42,7 +42,7 @@ EPA_TABLE = [
         'iH': 200,
         'breakpoints': {
             'O3':       { 'bL': 0.086,    'bH': 0.105   },
-            'PM2.5':    { 'bL': 55.5,     'bH': 150.4   },
+            'PM2.5':    { 'bL': 55.5,     'bH': 125.4   },
             'PM10':     { 'bL': 255,      'bH': 354     },
             'CO':       { 'bL': 12.5,     'bH': 15.4    },
             'SO2':      { 'bL': 186,      'bH': 304     },
@@ -54,7 +54,7 @@ EPA_TABLE = [
         'iH': 300,
         'breakpoints': {
             'O3':       { 'bL': 0.106,    'bH': 0.200   },
-            'PM2.5':    { 'bL': 150.5,    'bH': 250.4   },
+            'PM2.5':    { 'bL': 125.5,    'bH': 225.4   },
             'PM10':     { 'bL': 355,      'bH': 424     },
             'CO':       { 'bL': 15.5,     'bH': 30.4    },
             'SO2':      { 'bL': 305,      'bH': 604     },
@@ -63,27 +63,15 @@ EPA_TABLE = [
     },
     {
         'iL': 301,
-        'iH': 400,
-        'breakpoints': {
-            # Ozone here changes from 8h to 1h reporting
-            'O3':       { 'bL': 0.405,    'bH': 0.504   },
-            'PM2.5':    { 'bL': 250.5,    'bH': 350.4   },
-            'PM10':     { 'bL': 425,      'bH': 504     },
-            'CO':       { 'bL': 30.5,     'bH': 40.4    },
-            'SO2':      { 'bL': 605,      'bH': 804     },
-            'NO2':      { 'bL': 1250,     'bH': 1649    },
-        },
-    },
-    {
-        'iL': 401,
         'iH': 500,
         'breakpoints': {
-            'O3':       { 'bL': 0.505,    'bH': 0.604   },
-            'PM2.5':    { 'bL': 350.5,    'bH': 500.4   },
-            'PM10':     { 'bL': 505,      'bH': 604     },
-            'CO':       { 'bL': 40.5,     'bH': 50.4    },
-            'SO2':      { 'bL': 805,      'bH': 1004    },
-            'NO2':      { 'bL': 1650,     'bH': 2049    },
+            # Ozone here changes from 8h to 1h reporting
+            'O3':       { 'bL': 0.201,    'bH': 0.604   },
+            'PM2.5':    { 'bL': 225.5,    'bH': 325.4   },
+            'PM10':     { 'bL': 425,      'bH': 604     },
+            'CO':       { 'bL': 30.5,     'bH': 50.4    },
+            'SO2':      { 'bL': 605,      'bH': 1004    },
+            'NO2':      { 'bL': 1250,     'bH': 2049    },
         },
     },
 ]
@@ -100,13 +88,17 @@ EPA_ROUND_FNS = {
 
 def aqi_to_concentration(aqi, pollutant):
     '''Convert AQI (0-500) to Pollutant Concentration'''
-    if aqi < 0 or aqi > 500:
-        raise ValueError('AQI must be between 0 and 500')
+    if aqi < 0:
+        raise ValueError('AQI must be greater than 0')
 
+    max_breakpoint_aqi = EPA_TABLE[-1]['iH']
     for row in EPA_TABLE:
         iL = row['iL']
         iH = row['iH']
-        if iL <= aqi and iH >= aqi:
+
+        # The min() comparison here selects the last breakpoint row when
+        # AQI > 500. See the comment in `concentration_to_aqi`.
+        if iL <= aqi and iH >= min(aqi, max_breakpoint_aqi):
             bL = row['breakpoints'][pollutant]['bL']
             bH = row['breakpoints'][pollutant]['bH']
             cp = float(aqi - iL) * (bH - bL) / (iH - iL) + bL
@@ -121,10 +113,19 @@ def concentration_to_aqi(conc, pollutant):
         raise ValueError('Concentration must be positive')
 
     rounded = EPA_ROUND_FNS[pollutant](conc)
+    max_breakpoint_pollutant_conc = (
+        EPA_TABLE[-1]['breakpoints'][pollutant]['bH']
+    )
     for row in EPA_TABLE:
         bL = row['breakpoints'][pollutant]['bL']
         bH = row['breakpoints'][pollutant]['bH']
-        if bL <= rounded and bH >= rounded:
+        # As per EPA:
+        #   AQI values greater than 500 should be calculated using
+        #   [this algorithm] and the concentration specified for the
+        #   AQI value of 500.
+        # The min() comparison here selects the last breakpoint row
+        # in those cases.
+        if bL <= rounded and bH >= min(rounded, max_breakpoint_pollutant_conc):
             iL = row['iL']
             iH = row['iH']
 
