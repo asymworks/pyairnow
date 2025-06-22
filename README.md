@@ -118,7 +118,7 @@ asyncio.run(main())
 
 The library provides two convenience functions to convert between AQI and
 pollutant concentrations. See
-[this EPA document](https://www.airnow.gov/sites/default/files/2020-05/aqi-technical-assistance-document-sept2018.pdf)
+[this EPA document](https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf)
 for more details.
 
 ```python
