@@ -32,8 +32,11 @@ test-x :
 test-wip :
 	poetry run python -m pytest tests -m wip
 
+type-check :
+	poetry run mypy pyairnow
+
 all: test lint build publish
 
 .PHONY: build \
 	coverage coverage-html coverage-report \
-	lint test test-wip test-x
+	lint test test-wip test-x type-check

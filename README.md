@@ -154,6 +154,7 @@ concentration_to_aqi(53.0, 'PM2.5')
 5. Write tests that cover your new functionality.
 6. Run tests and ensure 100% code coverage: `make test`
 7. Run the linter to ensure 100% code style correctness: `make lint`
-8. Update `README.md` with any new documentation.
-9. Add yourself to `AUTHORS.md`.
-10. Submit a pull request!
+8. Run the type checker to ensure type correctness: `make type-check`
+9. Update `README.md` with any new documentation.
+10. Add yourself to `AUTHORS.md`.
+11. Submit a pull request!
