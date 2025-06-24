@@ -1,6 +1,19 @@
 '''Convert AQI to and from Pollutant Concentrations'''
+from typing import TypedDict
 
-EPA_TABLE = [
+
+class ConcBreakpointPair(TypedDict):
+    bL: float
+    bH: float
+
+
+class EPATableRow(TypedDict):
+    iL: int
+    iH: int
+    breakpoints: dict[str, ConcBreakpointPair]
+
+
+EPA_TABLE: list[EPATableRow] = [
     {
         'iL': 0,
         'iH': 50,
@@ -86,7 +99,7 @@ EPA_ROUND_FNS = {
 }
 
 
-def aqi_to_concentration(aqi, pollutant):
+def aqi_to_concentration(aqi: int, pollutant: str) -> float:
     '''Convert AQI (0-500) to Pollutant Concentration'''
     if aqi < 0:
         raise ValueError('AQI must be greater than 0')
@@ -107,7 +120,7 @@ def aqi_to_concentration(aqi, pollutant):
     raise RuntimeError('No matching row found in EPA_TABLE')
 
 
-def concentration_to_aqi(conc, pollutant):
+def concentration_to_aqi(conc: float, pollutant: str) -> int:
     '''Convert Pollutant Concentration to AQI'''
     if conc < 0:
         raise ValueError('Concentration must be positive')

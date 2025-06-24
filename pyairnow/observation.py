@@ -32,7 +32,7 @@ class Observations:
         longitude: Optional[Union[float, str]] = None,
         *,
         distance: Optional[int] = None,
-    ) -> None:
+    ) -> list:
         '''Request current observation for latitude/longitude'''
         params: dict = dict(
             latitude=str(latitude),
