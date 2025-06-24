@@ -1,6 +1,6 @@
 '''Client to interact with AirNow Air Quality API'''
 from json.decoder import JSONDecodeError
-from typing import Optional
+from typing import Optional, cast
 
 from aiohttp import ClientSession, ClientTimeout
 
@@ -20,7 +20,7 @@ class WebServiceAPI:
     ) -> None:
         '''Initialize with Client Session and API Key'''
         self._api_key: Optional[str] = api_key
-        self._session: ClientSession = session
+        self._session: Optional[ClientSession] = session
 
         self.forecast = Forecast(self._get)
         self.observations = Observations(self._get)
@@ -37,7 +37,7 @@ class WebServiceAPI:
 
         session: ClientSession
         if use_running_session:
-            session = self._session
+            session = cast(ClientSession, self._session)
         else:
             session = ClientSession(
                 timeout=ClientTimeout(total=API_DEFAULT_TIMEOUT)
