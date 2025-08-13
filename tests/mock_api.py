@@ -5,7 +5,7 @@ from aioresponses import CallbackResult
 
 MOCK_API_KEY = '01234567-89AB-CDEF-0123-456789ABCDEF'
 RE_ENDPOINTS = re.compile(
-    '^/?aq/(forecast|observation)/(zipCode|latLong)(/(current))?/?$'
+    '^/?aq/(forecast|observation)/(zipCode|latLong)(/(current|historical))?/?$'
 )
 
 

@@ -8,6 +8,7 @@ from .errors import AirNowError, EmptyResponseError, InvalidJsonError, \
     InvalidKeyError
 from .forecast import Forecast
 from .observation import Observations
+from .historical import Historical
 
 API_BASE_URL: str = 'https://www.airnowapi.org'
 API_DEFAULT_TIMEOUT: int = 10
@@ -24,6 +25,7 @@ class WebServiceAPI:
 
         self.forecast = Forecast(self._get)
         self.observations = Observations(self._get)
+        self.historical = Historical(self._get)
 
     async def _get(
         self, endpoint: str, *, base_url: str = API_BASE_URL, **kwargs
