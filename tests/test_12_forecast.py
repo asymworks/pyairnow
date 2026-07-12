@@ -12,33 +12,31 @@ async def test_api_forecast_zipcode(mock_airnowapi):
     data = await client.forecast.zipCode(90001)
 
     assert isinstance(data, list)
-    assert len(data) == 1
+    assert len(data) == 2
 
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
+    assert data[0]['DateIssue'] == '2020-09-01'
+    assert data[0]['DateForecast'] == '2020-09-02'
+    assert data[0]['ReportingArea'] == 'Los Angeles'
+    assert data[0]['StateCode'] == 'CA'
+    assert data[0]['ParameterName'] == 'O3'
+    assert data[0]['AQI'] == 55
+    assert data[0]['Category'] == {'Number': 2, 'Name': 'Moderate'}
+    assert data[0]['ActionDay'] is False
 
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
+    assert data[1]['ParameterName'] == 'PM2.5'
+    assert data[1]['AQI'] == 42
+    assert data[1]['Category'] == {'Number': 1, 'Name': 'Good'}
 
 
 @pytest.mark.asyncio
 async def test_api_forecast_zipcode_distance(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
-    data = await client.forecast.zipCode(90001, distance=100)
+    with pytest.warns(DeprecationWarning, match='distance parameter is deprecated'):
+        data = await client.forecast.zipCode(90001, distance=100)
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
-
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
-
-    assert 'distance' in data[0]['query']
-    assert data[0]['query']['distance'] == '100'
+    assert len(data) == 2
+    assert data[0]['ParameterName'] == 'O3'
 
 
 @pytest.mark.asyncio
@@ -47,17 +45,7 @@ async def test_api_forecast_zipcode_date_str(mock_airnowapi):
     data = await client.forecast.zipCode(90001, date='2020-09-01')
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
-
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
-
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -69,17 +57,7 @@ async def test_api_forecast_zipcode_date_date(mock_airnowapi):
     )
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
-
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
-
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -91,17 +69,7 @@ async def test_api_forecast_zipcode_date_datetime(mock_airnowapi):
     )
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
-
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
-
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -110,40 +78,28 @@ async def test_api_forecast_ll(mock_airnowapi):
     data = await client.forecast.latLong(34.053718, -118.244842)
 
     assert isinstance(data, list)
-    assert len(data) == 1
+    assert len(data) == 2
 
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'latLong'
-    assert data[0]['when'] is None
-
-    assert 'latitude' in data[0]['query']
-    assert data[0]['query']['latitude'] == '34.053718'
-    assert 'longitude' in data[0]['query']
-    assert data[0]['query']['longitude'] == '-118.244842'
+    assert data[0]['DateIssue'] == '2020-09-01'
+    assert data[0]['DateForecast'] == '2020-09-02'
+    assert data[0]['ReportingArea'] == 'Los Angeles'
+    assert data[0]['StateCode'] == 'CA'
+    assert data[0]['ParameterName'] == 'O3'
+    assert data[0]['AQI'] == 55
+    assert data[0]['Category'] == {'Number': 2, 'Name': 'Moderate'}
 
 
 @pytest.mark.asyncio
 async def test_api_forecast_ll_distance(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
-    data = await client.forecast.latLong(
-        34.053718, -118.244842,
-        distance=120
-    )
+    with pytest.warns(DeprecationWarning, match='distance parameter is deprecated'):
+        data = await client.forecast.latLong(
+            34.053718, -118.244842,
+            distance=120
+        )
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'latLong'
-    assert data[0]['when'] is None
-
-    assert 'latitude' in data[0]['query']
-    assert data[0]['query']['latitude'] == '34.053718'
-    assert 'longitude' in data[0]['query']
-    assert data[0]['query']['longitude'] == '-118.244842'
-
-    assert 'distance' in data[0]['query']
-    assert data[0]['query']['distance'] == '120'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -155,19 +111,7 @@ async def test_api_forecast_ll_date_str(mock_airnowapi):
     )
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'latLong'
-    assert data[0]['when'] is None
-
-    assert 'latitude' in data[0]['query']
-    assert data[0]['query']['latitude'] == '34.053718'
-    assert 'longitude' in data[0]['query']
-    assert data[0]['query']['longitude'] == '-118.244842'
-
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -179,19 +123,7 @@ async def test_api_forecast_ll_date_date(mock_airnowapi):
     )
 
     assert isinstance(data, list)
-    assert len(data) == 1
-
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'latLong'
-    assert data[0]['when'] is None
-
-    assert 'latitude' in data[0]['query']
-    assert data[0]['query']['latitude'] == '34.053718'
-    assert 'longitude' in data[0]['query']
-    assert data[0]['query']['longitude'] == '-118.244842'
-
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert len(data) == 2
 
 
 @pytest.mark.asyncio
@@ -203,16 +135,29 @@ async def test_api_forecast_ll_date_datetime(mock_airnowapi):
     )
 
     assert isinstance(data, list)
-    assert len(data) == 1
+    assert len(data) == 2
 
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'latLong'
-    assert data[0]['when'] is None
 
-    assert 'latitude' in data[0]['query']
-    assert data[0]['query']['latitude'] == '34.053718'
-    assert 'longitude' in data[0]['query']
-    assert data[0]['query']['longitude'] == '-118.244842'
+@pytest.mark.asyncio
+async def test_api_forecast_zipcode_raw_format(mock_airnowapi):
+    client = WebServiceAPI(MOCK_API_KEY, legacy_format=False)
+    data = await client.forecast.zipCode(90001)
 
-    assert 'date' in data[0]['query']
-    assert data[0]['query']['date'] == '2020-09-01'
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert data[0]['parameterName'] == 'OZONE'
+    assert data[0]['aqi'] == 55
+    assert data[0]['categoryName'] == 'Moderate'
+    assert 'DateIssue' not in data[0]
+
+
+@pytest.mark.asyncio
+async def test_api_forecast_ll_raw_format(mock_airnowapi):
+    client = WebServiceAPI(MOCK_API_KEY, legacy_format=False)
+    data = await client.forecast.latLong(34.053718, -118.244842)
+
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert data[0]['parameterName'] == 'OZONE'
+    assert data[0]['aqi'] == 55
+    assert 'DateIssue' not in data[0]

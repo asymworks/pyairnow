@@ -12,14 +12,12 @@ async def test_api(mock_airnowapi):
     data = await client.forecast.zipCode('90001')
 
     assert isinstance(data, list)
-    assert len(data) == 1
+    assert len(data) == 2
 
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
-
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
+    assert data[0]['ParameterName'] == 'O3'
+    assert data[0]['AQI'] == 55
+    assert data[0]['Category']['Number'] == 2
+    assert data[0]['Category']['Name'] == 'Moderate'
 
 
 @pytest.mark.asyncio
@@ -29,11 +27,9 @@ async def test_api_with_session(mock_airnowapi):
     data = await client.forecast.zipCode(90001)
 
     assert isinstance(data, list)
-    assert len(data) == 1
+    assert len(data) == 2
 
-    assert data[0]['type'] == 'forecast'
-    assert data[0]['mode'] == 'zipCode'
-    assert data[0]['when'] is None
+    assert data[0]['ParameterName'] == 'O3'
+    assert data[0]['AQI'] == 55
 
-    assert 'zipCode' in data[0]['query']
-    assert data[0]['query']['zipCode'] == '90001'
+    await session.close()

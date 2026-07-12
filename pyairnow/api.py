@@ -16,14 +16,15 @@ API_DEFAULT_TIMEOUT: int = 10
 class WebServiceAPI:
     '''Client to interact with AirNow API'''
     def __init__(
-        self, api_key: str, *, session: Optional[ClientSession] = None
+        self, api_key: str, *, session: Optional[ClientSession] = None,
+        legacy_format: bool = True
     ) -> None:
         '''Initialize with Client Session and API Key'''
         self._api_key: Optional[str] = api_key
         self._session: Optional[ClientSession] = session
 
-        self.forecast = Forecast(self._get)
-        self.observations = Observations(self._get)
+        self.forecast = Forecast(self._get, legacy_format=legacy_format)
+        self.observations = Observations(self._get, legacy_format=legacy_format)
 
     async def _get(
         self, endpoint: str, *, base_url: str = API_BASE_URL, **kwargs
