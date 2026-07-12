@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 None
 
+## [1.4.0] - 2026-07-12
+- Support AirNow 2026 API (#18, from @natefox)
+
 ## [1.3.1] - 2025-06-24
 - Improve type hinting (#16, from @natepugh)
 

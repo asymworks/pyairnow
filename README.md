@@ -19,7 +19,6 @@
 
 `pyairnow` is currently supported and tested on:
 
-* Python 3.9
 * Python 3.10
 * Python 3.11
 * Python 3.12
@@ -51,20 +50,10 @@ async def main() -> None:
   client = WebServiceAPI('your-api-key')
 
   # Get current observational data based on a zip code
-  data = await client.observations.zipCode(
-    '90001',
-    # if there are no observation stations in this zip code, optionally
-    # provide a radius to search (in miles)
-    distance=50,
-  )
+  data = await client.observations.zipCode('90001')
 
   # Get current observational data based on a latitude and longitude
-  data = await client.observations.latLong(
-    34.053718, -118.244842,
-    # if there are no observation stations at this location, optionally
-    # provide a radius to search (in miles)
-    distance=50,
-  )
+  data = await client.observations.latLong(34.053718, -118.244842)
 
   # Get forecast data based on a zip code
   data = await client.forecast.zipCode(
@@ -72,9 +61,6 @@ async def main() -> None:
     # to get a forecast for a certain day, provide a date in yyyy-mm-dd,
     # if not specified the current day will be used
     date='2020-09-01',
-    # if there are no observation stations in this zip code, optionally
-    # provide a radius to search (in miles)
-    distance=50,
   )
 
   # Get forecast data based on a latitude and longitude
@@ -83,9 +69,6 @@ async def main() -> None:
     '34.053718', '-118.244842',
     # forecast dates may also be datetime.date or datetime.datetime objects
     date=datetime.date(2020, 9, 1),
-    # if there are no observation stations in this zip code, optionally
-    # provide a radius to search (in miles)
-    distance=50,
   )
 
 
@@ -141,6 +124,46 @@ aqi_to_concentration(144, 'PM2.5')
 # Returns Cp = 53.0 ug/m^3
 concentration_to_aqi(53.0, 'PM2.5')
 
+```
+
+# Legacy API Format
+AirNow announced in June 2026 that the forecast and current observation APIs would be
+retired and replaced with new APIs with slightly changed output format. PyAirNow 1.4.0
+uses the new API endpoints by default, and can provide data in the legacy format for
+clients which expect it. To use the legacy format, pass `legacy_format=True` to the
+API constructor:
+
+```python
+import asyncio
+import datetime
+
+from pyairnow import WebServiceAPI
+
+
+async def main() -> None:
+  client_legacy = WebServiceAPI('your-api-key', legacy_format=True)
+  client_current = WebServiceAPI('your-api-key')
+
+  # Get current observational data based on a zip code
+  data_legacy = await client_legacy.observations.zipCode('90001')
+
+  # data_legacy = [{
+  #   'DateObserved': ...,
+  #   'HourObserved': ...,
+  #   ...,
+  #   'AQI': ...,
+  #   ...,
+  # }]
+
+  data_current = await client_current.observations.zipCode('90001')
+
+  # data_current = [{
+  #   'dateObserved': ...,
+  #   'hourObserved': ...,
+  #   ...,
+  #   'nowcastAQI': ...,
+  #   ...,
+  # }]
 ```
 
 # Contributing
