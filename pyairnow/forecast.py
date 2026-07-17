@@ -3,6 +3,8 @@ import warnings
 from datetime import date as date_, datetime
 from typing import Callable, Coroutine, Optional, Union
 
+from pyairnow.util import coalesce
+
 
 PARAMETER_NAME_MAP = {
     'OZONE': 'O3',
@@ -11,27 +13,34 @@ PARAMETER_NAME_MAP = {
 
 def _normalize_forecast(raw: dict) -> dict:
     '''Transform new API response format to legacy format for compatibility.'''
-    cat_number = raw.get('categoryNumber', raw.get('Category', {}).get('Number', 0))
-    cat_name = raw.get('categoryName', raw.get('Category', {}).get('Name', ''))
+    legacy_cat = coalesce(raw, 'Category', default={})
+    cat_number = coalesce(raw, 'categoryNumber')
+    if cat_number is None:
+        cat_number = coalesce(legacy_cat, 'Number', default=0)
+    cat_name = coalesce(raw, 'categoryName')
+    if cat_name is None:
+        cat_name = coalesce(legacy_cat, 'Name', default='')
 
-    param = raw.get('parameterName', raw.get('ParameterName', ''))
+    param = coalesce(raw, 'parameterName', 'ParameterName', default='')
     param = PARAMETER_NAME_MAP.get(param, param)
 
     return {
-        'DateIssue': raw.get('dateIssue', ''),
-        'DateForecast': raw.get('dateValid', raw.get('DateForecast', '')),
-        'ReportingArea': raw.get('reportingArea', raw.get('ReportingArea', '')),
-        'StateCode': raw.get('stateCode', raw.get('StateCode', '')),
-        'Latitude': raw.get('latitude', raw.get('Latitude')),
-        'Longitude': raw.get('longitude', raw.get('Longitude')),
+        'DateIssue': coalesce(raw, 'dateIssue', default=''),
+        'DateForecast': coalesce(raw, 'dateValid', 'DateForecast', default=''),
+        'ReportingArea': coalesce(
+            raw, 'reportingArea', 'ReportingArea', default=''
+        ),
+        'StateCode': coalesce(raw, 'stateCode', 'StateCode', default=''),
+        'Latitude': coalesce(raw, 'latitude', 'Latitude'),
+        'Longitude': coalesce(raw, 'longitude', 'Longitude'),
         'ParameterName': param,
-        'AQI': raw.get('aqi', raw.get('AQI', -1)),
+        'AQI': coalesce(raw, 'aqi', 'AQI', default=-1),
         'Category': {
             'Number': cat_number,
             'Name': cat_name,
         },
-        'ActionDay': raw.get('actionDay', raw.get('ActionDay', False)),
-        'Discussion': raw.get('discussion', raw.get('Discussion', '')),
+        'ActionDay': coalesce(raw, 'actionDay', 'ActionDay', default=False),
+        'Discussion': coalesce(raw, 'discussion', 'Discussion', default=''),
     }
 
 
