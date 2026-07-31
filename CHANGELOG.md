@@ -6,8 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-None
+- Handle null field values in response normalization (#19, from @derekcentrico)
 
 ## [1.4.0] - 2026-07-12
 - Support AirNow 2026 API (#18, from @natefox)

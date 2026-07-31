@@ -72,6 +72,41 @@ class TestObservationNormalization:
         assert result['ParameterName'] == ''
         assert result['AQI'] == -1
 
+    def test_null_fields_default_gracefully(self):
+        raw = {
+            'dateObserved': None,
+            'hourObserved': None,
+            'localTimeZone': None,
+            'reportingAreaName': None,
+            'stateCode': None,
+            'latitude': None,
+            'longitude': None,
+            'parameterName': None,
+            'nowcastAQI': None,
+            'aqiCategoryName': None,
+        }
+        result = _normalize_observation(raw)
+        assert result['DateObserved'] == ''
+        assert result['HourObserved'] == 0
+        assert result['LocalTimeZone'] == ''
+        assert result['ReportingArea'] == ''
+        assert result['StateCode'] == ''
+        assert result['Latitude'] is None
+        assert result['Longitude'] is None
+        assert result['ParameterName'] == ''
+        assert result['AQI'] == -1
+        assert result['Category'] == {'Number': 0, 'Name': ''}
+
+    def test_null_aqi_falls_back_to_aqi_key(self):
+        raw = {'nowcastAQI': None, 'aqi': 42, 'aqiCategoryName': 'Good'}
+        result = _normalize_observation(raw)
+        assert result['AQI'] == 42
+
+    def test_zero_aqi_is_preserved(self):
+        raw = {'nowcastAQI': 0, 'aqiCategoryName': 'Good'}
+        result = _normalize_observation(raw)
+        assert result['AQI'] == 0
+
 
 class TestForecastNormalization:
     def test_basic_fields(self):
@@ -120,3 +155,46 @@ class TestForecastNormalization:
         assert result['Category'] == {'Number': 0, 'Name': ''}
         assert result['ActionDay'] is False
         assert result['Discussion'] == ''
+
+    def test_null_fields_default_gracefully(self):
+        raw = {
+            'dateIssue': None,
+            'dateValid': None,
+            'reportingArea': None,
+            'stateCode': None,
+            'latitude': None,
+            'longitude': None,
+            'parameterName': None,
+            'aqi': None,
+            'categoryNumber': None,
+            'categoryName': None,
+            'actionDay': None,
+            'discussion': None,
+        }
+        result = _normalize_forecast(raw)
+        assert result['DateIssue'] == ''
+        assert result['DateForecast'] == ''
+        assert result['ReportingArea'] == ''
+        assert result['StateCode'] == ''
+        assert result['Latitude'] is None
+        assert result['Longitude'] is None
+        assert result['ParameterName'] == ''
+        assert result['AQI'] == -1
+        assert result['Category'] == {'Number': 0, 'Name': ''}
+        assert result['ActionDay'] is False
+        assert result['Discussion'] == ''
+
+    def test_null_legacy_category_defaults_gracefully(self):
+        result = _normalize_forecast({'Category': None, 'AQI': 20})
+        assert result['Category'] == {'Number': 0, 'Name': ''}
+        assert result['AQI'] == 20
+
+    def test_legacy_category_still_read(self):
+        name = 'Unhealthy for Sensitive Groups'
+        result = _normalize_forecast({'Category': {'Number': 3, 'Name': name}})
+        assert result['Category']['Number'] == 3
+        assert result['Category']['Name'] == name
+
+    def test_action_day_false_is_preserved(self):
+        result = _normalize_forecast({'actionDay': False})
+        assert result['ActionDay'] is False

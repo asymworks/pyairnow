@@ -2,6 +2,8 @@
 import warnings
 from typing import Callable, Coroutine, Optional, Union
 
+from pyairnow.util import coalesce
+
 
 CATEGORY_NAME_TO_NUMBER = {
     'Good': 1,
@@ -20,28 +22,28 @@ PARAMETER_NAME_MAP = {
 
 def _normalize_observation(raw: dict) -> dict:
     '''Transform new API response format to legacy format for compatibility.'''
-    hour_raw = raw.get('hourObserved', 0)
+    hour_raw = coalesce(raw, 'hourObserved', default=0)
     if isinstance(hour_raw, str):
         hour = int(hour_raw.split(':')[0])
     else:
         hour = int(hour_raw)
 
-    cat_name = raw.get('aqiCategoryName', '')
+    cat_name = coalesce(raw, 'aqiCategoryName', default='')
     cat_number = CATEGORY_NAME_TO_NUMBER.get(cat_name, 0)
 
-    param = raw.get('parameterName', '')
+    param = coalesce(raw, 'parameterName', default='')
     param = PARAMETER_NAME_MAP.get(param, param)
 
     return {
-        'DateObserved': raw.get('dateObserved', ''),
+        'DateObserved': coalesce(raw, 'dateObserved', default=''),
         'HourObserved': hour,
-        'LocalTimeZone': raw.get('localTimeZone', ''),
-        'ReportingArea': raw.get('reportingAreaName', ''),
-        'StateCode': raw.get('stateCode', ''),
-        'Latitude': raw.get('latitude'),
-        'Longitude': raw.get('longitude'),
+        'LocalTimeZone': coalesce(raw, 'localTimeZone', default=''),
+        'ReportingArea': coalesce(raw, 'reportingAreaName', default=''),
+        'StateCode': coalesce(raw, 'stateCode', default=''),
+        'Latitude': coalesce(raw, 'latitude'),
+        'Longitude': coalesce(raw, 'longitude'),
         'ParameterName': param,
-        'AQI': raw.get('nowcastAQI', raw.get('aqi', -1)),
+        'AQI': coalesce(raw, 'nowcastAQI', 'aqi', default=-1),
         'Category': {
             'Number': cat_number,
             'Name': cat_name,
