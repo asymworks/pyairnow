@@ -55,6 +55,14 @@ async def test_api_empty_error_response(mock_airnowapi):
 
 
 @pytest.mark.asyncio
+async def test_api_error_status_with_json_body(mock_airnowapi):
+    client = WebServiceAPI(MOCK_API_KEY)
+    with pytest.raises(InvalidJsonError) as exc_info:
+        await client.forecast.zipCode('server_error_list')
+    assert str(exc_info.value) == 'HTTP 503 Service Unavailable'
+
+
+@pytest.mark.asyncio
 async def test_api_bad_json_2(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
     with pytest.raises(InvalidJsonError):

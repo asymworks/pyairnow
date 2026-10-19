@@ -122,6 +122,13 @@ def mock_airnow_api(url, **kwargs):
     if 'zipCode' in url.query and url.query['zipCode'] == 'bad_gateway':
         return CallbackResult(status=502, body='')
 
+    # A zip code with value "server_error_list" will return a JSON body that
+    # is not an API error on an error status
+    if 'zipCode' in url.query and url.query['zipCode'] == 'server_error_list':
+        return CallbackResult(
+            status=503, reason='Service Unavailable', payload=[],
+        )
+
     # A zip code with value "error" will return a JSON error message
     if 'zipCode' in url.query and url.query['zipCode'] == 'error':
         return CallbackResult(status=400, payload=dict(

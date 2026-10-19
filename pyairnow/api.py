@@ -69,8 +69,12 @@ class WebServiceAPI:
                     response_text = await resp.text()
                     raise InvalidJsonError(response_text)
 
-                # json() returns None for an empty body
-                if data is None and resp.status >= 400:
+                # Errors from the API itself carry a WebServiceError payload
+                # and are handled below; anything else on an error status,
+                # including an empty body, is reported by status.
+                if resp.status >= 400 and not (
+                    isinstance(data, dict) and 'WebServiceError' in data
+                ):
                     raise InvalidJsonError(_status_message(resp))
 
         finally:
