@@ -31,6 +31,22 @@ async def test_api_bad_json(mock_airnowapi):
 
 
 @pytest.mark.asyncio
+async def test_api_bad_json_message(mock_airnowapi):
+    client = WebServiceAPI(MOCK_API_KEY)
+    with pytest.raises(InvalidJsonError) as exc_info:
+        await client.forecast.zipCode('bad_json')
+    assert str(exc_info.value) == 'Bad JSON Test'
+
+
+@pytest.mark.asyncio
+async def test_api_gateway_error_page(mock_airnowapi):
+    client = WebServiceAPI(MOCK_API_KEY)
+    with pytest.raises(InvalidJsonError) as exc_info:
+        await client.forecast.zipCode('gateway_timeout')
+    assert str(exc_info.value) == 'HTTP 504 Gateway Time-out'
+
+
+@pytest.mark.asyncio
 async def test_api_bad_json_2(mock_airnowapi):
     client = WebServiceAPI(MOCK_API_KEY)
     with pytest.raises(InvalidJsonError):

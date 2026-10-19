@@ -104,6 +104,19 @@ def mock_airnow_api(url, **kwargs):
     if 'zipCode' in url.query and url.query['zipCode'] == 'bad_json':
         return CallbackResult(body='Bad JSON Test')
 
+    # A zip code with value "gateway_timeout" will return an HTML error page
+    if 'zipCode' in url.query and url.query['zipCode'] == 'gateway_timeout':
+        return CallbackResult(
+            status=504,
+            reason='Gateway Time-out',
+            content_type='text/html',
+            body=(
+                '<html>\n<head><title>504 Gateway Time-out</title></head>\n'
+                '<body>\n<center><h1>504 Gateway Time-out</h1></center>\n'
+                '</body>\n</html>\n'
+            ),
+        )
+
     # A zip code with value "error" will return a JSON error message
     if 'zipCode' in url.query and url.query['zipCode'] == 'error':
         return CallbackResult(status=400, payload=dict(

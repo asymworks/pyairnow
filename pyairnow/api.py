@@ -51,6 +51,11 @@ class WebServiceAPI:
                 data = await resp.json(content_type=None)
 
         except JSONDecodeError:
+            # An error status says more than the body, which is usually an
+            # HTML page from a proxy or gateway in front of the API.
+            if resp.status >= 400:
+                raise InvalidJsonError(f'HTTP {resp.status} {resp.reason}')
+
             # The response can't be parsed as JSON, so we'll use its body text
             # in an error:
             response_text = await resp.text()
