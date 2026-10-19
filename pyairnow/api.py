@@ -2,7 +2,7 @@
 from json.decoder import JSONDecodeError
 from typing import Optional, cast
 
-from aiohttp import ClientSession, ClientTimeout
+from aiohttp import ClientResponse, ClientSession, ClientTimeout
 
 from .errors import AirNowError, EmptyResponseError, InvalidJsonError, \
     InvalidKeyError
@@ -11,6 +11,13 @@ from .observation import Observations
 
 API_BASE_URL: str = 'https://www.airnowapi.org'
 API_DEFAULT_TIMEOUT: int = 10
+
+
+def _status_message(resp: ClientResponse) -> str:
+    '''Describe an HTTP error status, e.g. "HTTP 504 Gateway Time-out"'''
+    if resp.reason:
+        return f'HTTP {resp.status} {resp.reason}'
+    return f'HTTP {resp.status}'
 
 
 class WebServiceAPI:
@@ -48,18 +55,23 @@ class WebServiceAPI:
             async with session.get(
                 f'{base_url}/{endpoint}', **kwargs
             ) as resp:
-                data = await resp.json(content_type=None)
+                try:
+                    data = await resp.json(content_type=None)
+                except JSONDecodeError:
+                    # An error status says more than the body, which is
+                    # usually an HTML page from a proxy or gateway in front
+                    # of the API.
+                    if resp.status >= 400:
+                        raise InvalidJsonError(_status_message(resp))
 
-        except JSONDecodeError:
-            # An error status says more than the body, which is usually an
-            # HTML page from a proxy or gateway in front of the API.
-            if resp.status >= 400:
-                raise InvalidJsonError(f'HTTP {resp.status} {resp.reason}')
+                    # The response can't be parsed as JSON, so we'll use its
+                    # body text in an error:
+                    response_text = await resp.text()
+                    raise InvalidJsonError(response_text)
 
-            # The response can't be parsed as JSON, so we'll use its body text
-            # in an error:
-            response_text = await resp.text()
-            raise InvalidJsonError(response_text)
+                # json() returns None for an empty body
+                if data is None and resp.status >= 400:
+                    raise InvalidJsonError(_status_message(resp))
 
         finally:
             if not use_running_session:
